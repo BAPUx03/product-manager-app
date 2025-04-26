@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Manager App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(-45deg, #f2f4f7, #dce9f9, #f2f4f7, #b0d0ff);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h2, h3 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .option-list {
+      list-style: none;
+      padding: 0;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .option-list li {
+      background-color: #007bff;
+      color: #fff;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    .option-list li:hover {
+      background-color: #0056b3;
+    }
+
+    .exit {
+      background-color: #dc3545;
+    }
+
+    .exit:hover {
+      background-color: #a71d2a;
+    }
+
+    .section {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .product-card {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 10px;
+      background: #f9f9f9;
+    }
+
+    .product-card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-right: 15px;
+    }
+
+    .product-info {
+      flex: 1;
+    }
+
+    .exit-msg {
+      font-size: 18px;
+      color: #d9534f;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      background: #28a745;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #218838;
+    }
+
+    .home-button {
+      display: none;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #ffc107;
+      color: #000;
+      font-weight: bold;
+      border-radius: 10px;
+      animation: slideIn 1s ease-out;
+    }
+
+    @keyframes slideIn {
+      0% {transform: translateY(20px); opacity: 0;}
+      100% {transform: translateY(0); opacity: 1;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Product Manager App</h2>
+
+    <!-- Login Section -->
+    <div id="loginSection" class="section" style="display: block;">
+      <h3>🔐 Login</h3>
+      <div class="form-group"><input type="text" id="loginName" placeholder="Name" /></div>
+      <div class="form-group"><input type="number" id="loginNumber" placeholder="Phone Number" /></div>
+      <div class="form-group"><input type="email" id="loginEmail" placeholder="Email ID" /></div>
+      <div class="form-group"><input type="password" id="loginPassword" placeholder="Password" /></div>
+      <button onclick="handleLogin()">Login</button>
+    </div>
+
+    <!-- Option Buttons -->
+    <ul class="option-list">
+      <li onclick="showSection('manager')">🧑‍💼 Product Manager</li>
+      <li onclick="showSection('customer')">🛍️ Customer</li>
+      <li class="exit" onclick="exitApp()">❌ Exit</li>
+    </ul>
+
+    <!-- Product Manager Section -->
+    <div id="managerSection" class="section">
+      <h3>🧑‍💼 Add a Product</h3>
+      <div class="form-group">
+        <input type="text" id="productName" placeholder="Product Name" />
+      </div>
+      <div class="form-group">
+        <input type="number" id="productPrice" placeholder="Price ($)" />
+      </div>
+      <div class="form-group">
+        <input type="text" id="productImage" placeholder="Image URL (open source)" />
+      </div>
+      <button onclick="addProduct()">Add Product</button>
+
+      <h3 style="margin-top: 25px;">📦 Product List</h3>
+      <div id="productList"></div>
+    </div>
+
+    <!-- Customer Section -->
+    <div id="customerSection" class="section">
+      <h3>🛒 Customer View</h3>
+      <div id="customerView"></div>
+    </div>
+
+    <!-- Exit Message -->
+    <div id="exitMessage" class="exit-msg"></div>
+
+    <!-- Home Button -->
+    <div style="text-align:center;">
+      <button id="homeBtn" class="home-button" onclick="goHome()">🏠 Home</button>
+    </div>
+  </div>
+
+  <script>
+    let products = [];
+
+    function handleLogin() {
+      const name = document.getElementById("loginName").value;
+      const number = document.getElementById("loginNumber").value;
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      if (!name || !number || !email || !password) {
+        alert("Please fill all login fields!");
+        return;
+      }
+
+      document.getElementById("loginSection").style.display = "none";
+      document.querySelector(".option-list").style.display = "flex";
+      document.getElementById("homeBtn").style.display = "inline-block";
+      alert("✅ Login Successful!");
+    }
+
+    function showSection(section) {
+      document.getElementById("managerSection").style.display = "none";
+      document.getElementById("customerSection").style.display = "none";
+      document.getElementById("exitMessage").innerText = "";
+
+      if (section === "manager") {
+        document.getElementById("managerSection").style.display = "block";
+      } else if (section === "customer") {
+        document.getElementById("customerSection").style.display = "block";
+        renderCustomerView();
+      }
+    }
+
+    function addProduct() {
+      const name = document.getElementById("productName").value;
+      const price = document.getElementById("productPrice").value;
+      const image = document.getElementById("productImage").value;
+
+      if (!name || !price || !image) {
+        alert("Please fill out all fields.");
+        return;
+      }
+
+      const product = { name, price, image };
+      products.push(product);
+
+      renderProducts();
+      clearForm();
+    }
+
+    function renderProducts() {
+      const list = document.getElementById("productList");
+      list.innerHTML = "";
+
+      products.forEach(product => {
+        list.innerHTML += `
+          <div class="product-card">
+            <img src="${product.image}" alt="${product.name}" />
+            <div class="product-info">
+              <strong>📦 ${product.name}</strong><br>
+              💵 $${product.price}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function renderCustomerView() {
+      const view = document.getElementById("customerView");
+      view.innerHTML = "";
+
+      if (products.length === 0) {
+        view.innerHTML = "<p>No products available yet!</p>";
+        return;
+      }
+
+      products.forEach(product => {
+        view.innerHTML += `
+          <div class="product-card">
+            <img src="${product.image}" alt="${product.name}" />
+            <div class="product-info">
+              <strong>${product.name}</strong><br>
+              Price: $${product.price}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function clearForm() {
+      document.getElementById("productName").value = "";
+      document.getElementById("productPrice").value = "";
+      document.getElementById("productImage").value = "";
+    }
+
+    function exitApp() {
+      document.getElementById("managerSection").style.display = "none";
+      document.getElementById("customerSection").style.display = "none";
+      document.getElementById("exitMessage").innerText = "👋 Thank you for using the app!";
+    }
+
+    function goHome() {
+      document.getElementById("managerSection").style.display = "none";
+      document.getElementById("customerSection").style.display = "none";
+      document.getElementById("exitMessage").innerText = "";
+    }
+  </script>
+</body>
+</html>
