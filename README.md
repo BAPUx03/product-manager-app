@@ -6,9 +6,9 @@ Users can log in, add new products, view them as a manager or customer, and simu
 ---
 
 ## 🚀 Live Demo
-[![Live Demo](https://img.shields.io/badge/Live-Demo-green?style=for-the-badge&logo=google-chrome)](https://your-live-link-here.com)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-green?style=for-the-badge&logo=google-chrome)](https://bapux03.github.io/product-manager-app/)
 
-> **Replace** `https://your-live-link-here.com` with your live site URL!
+
 
 ---
 
